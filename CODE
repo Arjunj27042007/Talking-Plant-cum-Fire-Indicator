@@ -1,0 +1,62 @@
+//This is the code for " Talking Plant cum Fire Indicator ".
+
+
+#include <LiquidCrystal.h>
+
+
+LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
+
+int tempPin = A0;   
+int ledPin = 8;     
+int buzzerPin = 9;  
+
+float temperatureC;
+
+void setup() {
+  lcd.begin(16, 2);   
+  pinMode(ledPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+
+  lcd.setCursor(0,0);
+  lcd.print("Plant Monitor");
+  delay(2000);
+  lcd.clear();
+}
+
+void loop() {
+  int reading = analogRead(tempPin);
+
+ 
+  float voltage = reading * (5.0 / 1023.0);
+
+  
+  temperatureC = (voltage - 0.5) * 100.0;
+
+  
+  lcd.setCursor(0,0);
+  lcd.print("Temp: ");
+  lcd.print(temperatureC);
+  lcd.print((char)223); // degree symbol
+  lcd.print("C   ");
+
+  lcd.setCursor(0,1);
+  if (temperatureC < 18) {
+    lcd.print("Too Cold     ");
+    digitalWrite(ledPin, LOW);
+    digitalWrite(buzzerPin, LOW);
+  } else if (temperatureC >= 18 && temperatureC <= 30) {
+    lcd.print("Healthy :)   ");
+    digitalWrite(ledPin, LOW);
+    digitalWrite(buzzerPin, LOW);
+  } else if (temperatureC > 30 && temperatureC < 40) {
+    lcd.print("Hot! Water It");
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(buzzerPin, LOW);
+  } else {  // Fire condition
+    lcd.print("FIRE ALERT!  ");
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(buzzerPin, HIGH);
+  }
+
+  delay(1000); 
+}
